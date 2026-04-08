@@ -41,7 +41,7 @@ RUN npm run build
 # ─────────────────────────────────────────────
 FROM node:22-alpine AS runner
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat curl
 
 WORKDIR /app
 
@@ -67,7 +67,7 @@ EXPOSE 3000
 # Required: UDM_API_URL, UDM_API_KEY
 # Optional: UDM_API_SITE_ID (auto-resolved if unset)
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:3000/ || exit 1
+HEALTHCHECK --interval=60s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -fsS http://localhost:3000/health > /dev/null || exit 1
 
 CMD ["node", "server.js"]
