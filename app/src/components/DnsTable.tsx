@@ -124,29 +124,29 @@ export default function DnsTable() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">UDM DNS Records</h1>
-        <div className="flex items-center gap-3">
+    <div className="max-w-5xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">UDM DNS Records</h1>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           {selectedIds.size > 0 && (
             <button
               onClick={handleBulkDelete}
               disabled={bulkDeleting}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50"
+              className="hidden sm:inline-flex px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50"
             >
               {bulkDeleting ? "Deleting…" : `Delete (${selectedIds.size})`}
             </button>
           )}
           <button
             onClick={() => setShowCreate(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             + New Record
           </button>
           <button
             onClick={triggerCron}
             disabled={cronRunning}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium disabled:opacity-50"
+            className="px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium disabled:opacity-50"
             title={cronStatus ? `Last run: ${cronStatus.timestamp}` : "No runs yet"}
           >
             {cronRunning ? "Running…" : "Run Job"}
@@ -173,11 +173,11 @@ export default function DnsTable() {
               <div className="text-center py-12 text-gray-500">No DNS records found.</div>
             ) : (
               <>
-                <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="rounded-lg border border-gray-200 dark:border-gray-700">
                   <table className="w-full text-sm">
                     <thead className="bg-gray-50 dark:bg-gray-800 text-left">
                       <tr>
-                        <th className="px-4 py-3 w-10">
+                        <th className="px-4 py-3 w-10 hidden sm:table-cell">
                           <input
                             type="checkbox"
                             checked={selectedIds.size === manualRecords.length && manualRecords.length > 0}
@@ -185,15 +185,15 @@ export default function DnsTable() {
                             className="rounded"
                           />
                         </th>
-                        <th className="px-4 py-3 font-medium">Domain</th>
-                        <th className="px-4 py-3 font-medium">IP / Value</th>
-                        <th className="px-4 py-3 font-medium">Type</th>
-                        <th className="px-4 py-3 font-medium">Enabled</th>
+                        <th className="px-3 sm:px-4 py-3 font-medium">Domain</th>
+                        <th className="px-3 sm:px-4 py-3 font-medium hidden sm:table-cell">IP / Value</th>
+                        <th className="px-3 sm:px-4 py-3 font-medium hidden md:table-cell">Type</th>
+                        <th className="px-2 sm:px-4 py-3 font-medium w-[60px] sm:w-auto">Enabled</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {manualRecords.length === 0 ? (
-                        <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-500">No manual records.</td></tr>
+                        <tr><td colSpan={4} className="px-4 py-6 text-center text-gray-500">No manual records.</td></tr>
                       ) : manualRecords.map((r) => {
                         const rid = getId(r);
                         return (
@@ -204,7 +204,7 @@ export default function DnsTable() {
                               selectedIds.has(rid) ? "bg-blue-50 dark:bg-blue-900/20" : ""
                             }`}
                           >
-                            <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                            <td className="px-4 py-3 hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
                               <input
                                 type="checkbox"
                                 checked={selectedIds.has(rid)}
@@ -212,14 +212,17 @@ export default function DnsTable() {
                                 className="rounded"
                               />
                             </td>
-                            <td className="px-4 py-3 font-mono">{r.domain}</td>
-                            <td className="px-4 py-3 font-mono">{getIp(r)}</td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-3">
+                              <div className="font-mono text-xs sm:text-sm truncate">{r.domain}</div>
+                              <div className="font-mono text-[11px] text-text-tertiary truncate sm:hidden">{getIp(r)}</div>
+                            </td>
+                            <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm hidden sm:table-cell">{getIp(r)}</td>
+                            <td className="px-3 sm:px-4 py-3 hidden md:table-cell">
                               <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-xs font-medium">
                                 {r.type}
                               </span>
                             </td>
-                            <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                            <td className="px-2 sm:px-4 py-3" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => toggleEnabled(r)}
                                 className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
@@ -248,14 +251,14 @@ export default function DnsTable() {
                       NPM Synced Records
                       <span className="text-xs font-normal text-gray-500">→ {npmIp}</span>
                     </h2>
-                    <div className="overflow-hidden rounded-lg border border-green-700/30">
+                    <div className="rounded-lg border border-green-700/30">
                       <table className="w-full text-sm">
                         <thead className="bg-green-900/20 text-left">
                           <tr>
-                            <th className="px-4 py-3 font-medium">Domain</th>
-                            <th className="px-4 py-3 font-medium">IP</th>
-                            <th className="px-4 py-3 font-medium">Type</th>
-                            <th className="px-4 py-3 font-medium">Enabled</th>
+                            <th className="px-3 sm:px-4 py-3 font-medium">Domain</th>
+                            <th className="px-3 sm:px-4 py-3 font-medium hidden sm:table-cell">IP</th>
+                            <th className="px-3 sm:px-4 py-3 font-medium hidden md:table-cell">Type</th>
+                            <th className="px-2 sm:px-4 py-3 font-medium w-[60px] sm:w-auto">Enabled</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-green-700/20">
@@ -267,14 +270,17 @@ export default function DnsTable() {
                                 onClick={() => setSelected(r)}
                                 className="hover:bg-green-900/10 cursor-pointer transition-colors"
                               >
-                                <td className="px-4 py-3 font-mono">{r.domain}</td>
-                                <td className="px-4 py-3 font-mono">{getIp(r)}</td>
-                                <td className="px-4 py-3">
+                                <td className="px-3 sm:px-4 py-3">
+                                  <div className="font-mono text-xs sm:text-sm truncate">{r.domain}</div>
+                                  <div className="font-mono text-[11px] text-text-tertiary truncate sm:hidden">{getIp(r)}</div>
+                                </td>
+                                <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm hidden sm:table-cell">{getIp(r)}</td>
+                                <td className="px-3 sm:px-4 py-3 hidden md:table-cell">
                                   <span className="px-2 py-0.5 rounded bg-green-900/30 text-xs font-medium">
                                     {r.type}
                                   </span>
                                 </td>
-                                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                                <td className="px-2 sm:px-4 py-3" onClick={(e) => e.stopPropagation()}>
                                   <button
                                     onClick={() => toggleEnabled(r)}
                                     className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
